@@ -25,7 +25,7 @@ plt.scatter(transformed[:, 0], transformed[:, 1], c=cluster_labels)
 
 Into a chainlearn pipeline that looks like a "tidyverse" version:
 
-```
+```python
 import seaborn as sns
 import chainlearn
 
