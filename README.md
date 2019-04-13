@@ -23,7 +23,7 @@ transformed = tsne.fit_transform(pca.fit_transform(iris))
 plt.scatter(transformed[:, 0], transformed[:, 1], c=cluster_labels)
 ```
 
-Into a chainlearn pipeline that looks like a "tidyverse" version:
+Into a chainlearn pipeline that tries to look like a "tidyverse" version:
 
 ```python
 import seaborn as sns
@@ -66,6 +66,8 @@ You can also do supervised/regressions/etc:
  .hist()
 )
 ```
+
+Check out the examples notebook...
 
 ## Other stuff you can do 
 
