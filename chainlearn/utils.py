@@ -13,10 +13,16 @@ import sklearn.ensemble
 import sklearn.preprocessing
 import sklearn.manifold
 
-from typing import Union
+from typing import Union, Optional
 
 
 __METHODS: str =  ['predict', 'transform', 'fit_predict', 'fit_transform']
+
+@pd.api.extensions.register_dataframe_accessor('learn')
+@pd.api.extensions.register_series_accessor('learn')
+class LearnAccessor(object):
+    def __init__(self, pandas_obj):
+        self._obj = pandas_obj
 
 def __register_chain_vars(
         df: pd.DataFrame,
@@ -69,19 +75,19 @@ def generate_model_function(model_class: Union[ABCMeta, type]):
             break
 
     def model_fun(
-            self: Union[pd.DataFrame, pd.Series],
-            target: Union[str, pd.DataFrame, pd.Series, np.array, None] = None,
+            self: LearnAccessor,
+            target: Optional[Union[str, pd.DataFrame, pd.Series, np.array]] = None,
             *args,
             **kwargs
             ):
         model = model_class(*args, **kwargs)
 
-        if type(self) == pd.DataFrame and target in self.columns:
-            Y = self[target]
-            X = self.drop(target, axis=1)
+        if type(self._obj) == pd.DataFrame and target in self._obj.columns:
+            Y = self._obj[target]
+            X = self._obj.drop(target, axis=1)
         else:
             Y = target
-            X = self
+            X = self._obj
         if type(X) == pd.DataFrame and len(X.shape) == 1:
             X = X.reshape(len(X), 1)
 
@@ -98,7 +104,7 @@ def generate_model_function(model_class: Union[ABCMeta, type]):
         else:
             df = pd.DataFrame(
                     res,
-                    index=self.index
+                    index=self._obj.index
                     )
             __register_chain_vars(
                     df,
@@ -110,8 +116,8 @@ def generate_model_function(model_class: Union[ABCMeta, type]):
     return model_fun
 
 def generate_explain_function():
-    def explain_fun(self: pd.DataFrame):
-        __chain_vars = __get_chain_vars(self)
+    def explain_fun(self: LearnAccessor):
+        __chain_vars = __get_chain_vars(self._obj)
         if 'sklearn.ensemble' in __chain_vars['model'].__module__:
             res = __chain_vars['model'].feature_importances_
             col_prefix = 'feature_importance'
@@ -134,11 +140,11 @@ def generate_explain_function():
 
 def generate_cross_validate_function():
     def cross_validate_fun(
-            self: pd.DataFrame,
+            self: LearnAccessor,
             folds: Union[int, float],
             **cvargs
             ):
-        __chain_vars = __get_chain_vars(self)
+        __chain_vars = __get_chain_vars(self._obj)
         res = cross_val_score(
                 __chain_vars['model'],
                 __chain_vars['prev'],
@@ -148,7 +154,7 @@ def generate_cross_validate_function():
         return pd.DataFrame(res, columns=['score'])
     return cross_validate_fun
 
-def attach(module, classes=[pd.DataFrame, pd.Series]):
+def attach(module, classes=[LearnAccessor]):
     for model_class in get_models_from_module(module):
         method_name = model_class.__name__
         for cls in classes:
