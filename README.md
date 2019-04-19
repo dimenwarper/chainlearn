@@ -2,7 +2,7 @@
 
 Mini module with some syntax sugar utilities for pandas and sklearn. It basically allows you turn this:
 
-```
+```python
 import seaborn as sns
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
@@ -23,9 +23,9 @@ transformed = tsne.fit_transform(pca.fit_transform(iris))
 plt.scatter(transformed[:, 0], transformed[:, 1], c=cluster_labels)
 ```
 
-Into a chainlearn pipeline that looks like a "tidyverse" version:
+Into a chainlearn pipeline that tries to look like a "tidyverse" version:
 
-```
+```python
 import seaborn as sns
 import chainlearn
 
@@ -50,9 +50,9 @@ iris = sns.load_dataset('iris')
 
 This is achieved by attaching some sklearn model and preprocessing classes to the pandas `DataFrame` and `Series` classes, and trying to guess what methods should be called. 
 
-You can also do regressions:
+You can also do supervised/regressions/etc:
 
-```
+```python
 (iris
  .assign(
      species=lambda df: df['species'].LabelEncoder()
@@ -67,6 +67,8 @@ You can also do regressions:
 )
 ```
 
+Check out the examples notebook...
+
 ## Other stuff you can do 
 
 Additionally, there are a couple of methods you can call to shorten some tasks.
@@ -75,7 +77,7 @@ Additionally, there are a couple of methods you can call to shorten some tasks.
 
 Calling `explain` at the end of your chainlearn pipeline will get you whatever the model has to try to explain itself. In linear models this will be the coefficients, while ensemble models will have feature importances (in sklearn computed as mean decrease impurity for most models).
 
-```
+```python
 (iris
  .assign(
      species=lambda df: df['species'].LabelEncoder()
@@ -93,7 +95,7 @@ I may add some SHAP value calculations in the near future.
 
 There is also a `cross_validate` function that will perform cross validation and get you the scores.
 
-```
+```python
 (iris
  .assign(
      species=lambda df: df['species'].LabelEncoder()
@@ -112,7 +114,7 @@ There is also a `cross_validate` function that will perform cross validation and
 
 If you have your own module with models that follow the sklearn api (i.e. have `fit` and/or `fit_predict`, `fit_transform`, `transform`, `predict` methods) you can attach them to `DataFrames` and `Series`:
 
-```
+```python
 import mymodels # Contains a MyModel class with a fit_transform method
 from chainlearn import attach
 attach(mymodels)
