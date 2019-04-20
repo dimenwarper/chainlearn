@@ -28,6 +28,7 @@ Into a chainlearn pipeline that tries to look like a "tidyverse" version:
 ```python
 import seaborn as sns
 import chainlearn
+from matplotlib import pyplot as plt
 
 iris = sns.load_dataset('iris')
 
@@ -67,7 +68,7 @@ You can also do supervised/regressions/etc:
 )
 ```
 
-Check out the examples notebook...
+Check out the [examples notebook]('./examples/showcase.ipynb')...
 
 ## Other stuff you can do 
 
