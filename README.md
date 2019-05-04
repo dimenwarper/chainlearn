@@ -16,9 +16,9 @@ tsne = TSNE(n_components=2)
 
 kmeans = KMeans(n_clusters=2)
 
-cluster_labels = kmeans.fit_predict(iris)
-
 transformed = tsne.fit_transform(pca.fit_transform(iris))
+
+cluster_labels = kmeans.fit_predict(transformed)
 
 plt.scatter(transformed[:, 0], transformed[:, 1], c=cluster_labels)
 ```
@@ -34,10 +34,10 @@ iris = sns.load_dataset('iris')
 
 (iris
  .drop('species', axis=1)
- .PCA(n_components=3)
- .TSNE(n_components=2)
+ .learn.PCA(n_components=3)
+ .learn.TSNE(n_components=2)
  .assign(
-     cluster=lambda df: df.KMeans(n_clusters=2)
+     cluster=lambda df: df.learn.KMeans(n_clusters=2)
  )
  .plot
  .scatter(
@@ -56,9 +56,9 @@ You can also do supervised/regressions/etc:
 ```python
 (iris
  .assign(
-     species=lambda df: df['species'].LabelEncoder()
+     species=lambda df: df['species'].learn.LabelEncoder()
  )
- .RandomForestClassifier(
+ .learn.RandomForestClassifier(
      n_estimators=100,
      target='species'
  )
@@ -81,10 +81,10 @@ Calling `explain` at the end of your chainlearn pipeline will get you whatever t
 ```python
 (iris
  .assign(
-     species=lambda df: df['species'].LabelEncoder()
+     species=lambda df: df['species'].learn.LabelEncoder()
  )
- .Lasso(alpha=0.01, target='species')
- .explain()
+ .learn.Lasso(alpha=0.01, target='species')
+ .learn.explain()
  .plot
  .bar()
 );
@@ -99,13 +99,13 @@ There is also a `cross_validate` function that will perform cross validation and
 ```python
 (iris
  .assign(
-     species=lambda df: df['species'].LabelEncoder()
+     species=lambda df: df['species'].learn.LabelEncoder()
  )
- .RandomForestClassifier(
+ .learn.RandomForestClassifier(
      n_estimators=100,
      target='species'
  )
- .cross_validate(folds=5, scoring='f1_macro')
+ .learn.cross_validate(folds=5, scoring='f1_macro')
  .plot
  .hist()
 );
@@ -121,7 +121,7 @@ from chainlearn import attach
 attach(mymodels)
 
 (iris
- .MyModel(params=params)
+ .learn.MyModel(params=params)
  .plot
  .scatter(x=0, y=1)
 );

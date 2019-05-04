@@ -10,7 +10,7 @@ MAINTAINER = 'Pablo Cordero'
 MAINTAINER_EMAIL = 'dimenwarper@gmail.com'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/dimenwarper/chainlearn/'
-VERSION = '0.0.1.dev'
+VERSION = '0.0.2.dev'
 
 INSTALL_REQUIRES = [
     'scikit-learn>=0.19.0',
