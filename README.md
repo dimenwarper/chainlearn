@@ -1,4 +1,5 @@
 # Chainlearn
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dimenwarper/chainlearn/CI)
 
 Mini module with some syntax sugar utilities for pandas and sklearn. It basically allows you turn this:
 
